@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IncluNet</title>
+  <style>
+    /* ====== ESTILOS GENERALES ====== */
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #f5f7fa;
+      color: #333;
+    }
+    header {
+      background: #0077b6;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+    .container {
+      padding: 2rem;
+      max-width: 900px;
+      margin: auto;
+    }
+    button, .btn {
+      background: #00b4d8;
+      border: none;
+      border-radius: 12px;
+      padding: 0.8rem 1.5rem;
+      margin: 0.5rem;
+      font-size: 1rem;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover, .btn:hover {
+      background: #0096c7;
+    }
+    nav {
+      display: flex;
+      justify-content: space-around;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #0077b6;
+      padding: 0.8rem 0;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+    nav a:hover {
+      color: #90e0ef;
+    }
+    section {
+      display: none;
+      padding: 2rem;
+    }
+    section.active {
+      display: block;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.2rem;
+      margin: 1.5rem 0;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+    }
+    .card img {
+      width: 100%;
+      border-radius: 8px;
+      margin-top: 0.8rem;
+    }
+    h2 {
+      color: #0077b6;
+    }
+  </style>
+  <script>
+    // ====== FUNCIÓN DE NAVEGACIÓN ======
+    function showSection(id) {
+      document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
+  </script>
+</head>
+<body>
+
+  <!-- ====== CABECERA ====== -->
+  <header>IncluNet</header>
+
+  <!-- ====== BIENVENIDA ====== -->
+  <section id="home" class="active">
+    <div class="container" style="text-align: center;">
+      <h1>Bienvenido a IncluNet</h1>
+      <p>Un espacio digital inclusivo para personas con discapacidad motriz y aliados.</p>
+      
+      <!-- Aquí insertar imagen de bienvenida -->
+      <img src="https://cdn-icons-png.flaticon.com/128/8984/8984783.png" width="250" height="250" alt="Bienvenida a IncluNet">
+
+      <div style="text-align: center;">
+  <button type="button" onclick="showSection('login')">Ingresar</button>
+<button type="button" onclick="showSection('register')">Registrarse</button>
+<button type="button" onclick="showSection('menu')">Acceder como invitado</button>
+    </div>
+  </section>
+
+  <!-- ====== LOGIN ====== -->
+<section id="login">
+  <div class="container" style="text-align: center;">
+    <img src="https://cdn-icons-png.flaticon.com/128/8984/8984715.png" alt="Imagen de inicio de sesión" style="width:150px; margin-bottom: 20px;">
+    <h2>Iniciar sesión</h2>
+
+    <form onsubmit="loginUser(event)">
+      <input id="loginEmail" type="email" placeholder="Correo" required><br><br>
+      <input id="loginPassword" type="password" placeholder="Contraseña" required><br><br>
+
+      <!-- Botón respetado -->
+      <button type="submit">Entrar</button>
+    </form>
+
+    <p><a href="#" onclick="showSection('home')">Volver</a></p>
+  </div>
+</section>
+
+<script>
+  function loginUser(event) {
+    event.preventDefault(); // Evita recargar página
+
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
+
+    const users = JSON.parse(localStorage.getItem("users")) || {};
+
+    // Validar email existente
+    if (!users[email]) {
+      alert("No existe una cuenta con este correo.");
+      return; // <-- Evita abrir el menú
+    }
+
+    // Validar contraseña
+    if (users[email].password !== password) {
+      alert("Contraseña incorrecta.");
+      return; // <-- Evita abrir el menú
+    }
+
+    // Guardar usuario activo
+    localStorage.setItem("activeUser", email);
+
+    alert("Inicio de sesión exitoso.");
+
+    // Solo se ejecuta si todo fue correcto
+    showSection("menu");
+  }
+
+function showSection(id) {
+
+  // Proteger la sección MENU
+  if (id === "menu") {
+    const active = localStorage.getItem("activeUser");
+    if (!active) {
+      alert("Primero debes iniciar sesión.");
+      return;
+    }
+  }
+
+  // Ocultar todas las secciones
+  document.querySelectorAll("section").forEach(s => s.style.display = "none");
+
+  // Mostrar la sección solicitada
+  document.getElementById(id).style.display = "block";
+}
+</script>
+
+  <!-- ====== REGISTRO ====== -->
+<section id="register">
+  <div class="container" style="text-align: center;">
+    <img src="https://cdn-icons-png.flaticon.com/128/1806/1806227.png" alt="Imagen de inicio de sesión" style="width:150px; margin-bottom: 20px;">
+    <h2>Crear cuenta</h2>
+    
+    <form onsubmit="registerUser(event)">
+      <input id="regName" type="text" placeholder="Nombre completo" required><br><br>
+      <input id="regEmail" type="email" placeholder="Correo" required><br><br>
+      <input id="regPassword" type="password" placeholder="Contraseña" required><br><br>
+
+      <!-- SE RESPETA TU BOTÓN - SOLO SE QUITA EL onclick QUE ROMPÍA TODO -->
+      <button type="submit">Registrarse</button>
+    </form>
+
+    <p><a href="#" onclick="showSection('home')">Volver</a></p>
+  </div>
+</section>
+
+<script>
+
+  
+  function showSection(sectionId) {
+    // Ocultar todas las secciones
+    const sections = document.querySelectorAll("section");
+    sections.forEach(sec => sec.style.display = "none");
+
+    // Mostrar la sección solicitada
+    document.getElementById(sectionId).style.display = "block";
+  }
+  
+  function registerUser(event) {
+    event.preventDefault();
+
+    const name = document.getElementById("regName").value;
+    const email = document.getElementById("regEmail").value;
+    const password = document.getElementById("regPassword").value;
+
+    const users = JSON.parse(localStorage.getItem("users")) || {};
+
+    if (users[email]) {
+      alert("Este correo ya está registrado.");
+      return;
+    }
+
+    // Guardar nuevo usuario
+    users[email] = {
+      name: name,
+      email: email,
+      password: password
+    };
+
+    localStorage.setItem("users", JSON.stringify(users));
+
+    alert("Cuenta creada exitosamente.");
+
+    // Guardar usuario activo para permitir acceso inmediato
+    localStorage.setItem("activeUser", email);
+
+    // Ir al menú
+    showSection("menu");
+  }
+</script>
+
+
+  <!-- ====== MENÚ PRINCIPAL ====== -->
+  <section id="menu">
+    <div class="container" style="text-align: center;">
+   <h2>Menú Principal</h2>
+      <p>Selecciona un apartado para comenzar:</p>
+
+      <!-- Aquí insertar imagen del menú principal -->
+      <img src="https://cdn-icons-png.flaticon.com/128/8984/8984792.png" alt="Menú IncluNet">
+    </div>
+  </section>
+
+ <!-- ====== LA PLAZA (FORO) ====== -->
+<section id="plaza">
+  <div class="container">
+  
+    <div style="text-align: center;">
+      <img src="https://cdn-icons-png.flaticon.com/128/745/745205.png" width="250" height="250" alt="Bienvenida a IncluNet">
+    </div>
+
+    <h2 style="text-align: center;">La Plaza "Foro de Comunidad"</h2>
+    <p>Un espacio donde los usuarios comparten experiencias, consejos y reflexiones sobre la vida con discapacidad motriz.</p>
+
+    <!-- FORMULARIO DE PUBLICACIÓN -->
+    <div style="text-align:center; margin-top:30px;">
+      <h3>Comparte tu aporte</h3>
+
+      <label>Tipo de publicación:</label><br>
+      <select id="tipoPublicacion">
+        <option value="Historia">Historia</option>
+        <option value="Reflexión">Reflexión</option>
+        <option value="Consejo">Consejo</option>
+      </select>
+
+      <br><br>
+
+      <p><strong>Publicar como:</strong> <span id="nombreUsuarioPlaza"></span></p>
+
+      <textarea id="textoPublicacion" rows="5" placeholder="Escribe tu mensaje aquí..." style="width:90%;"></textarea>
+
+      <br><br>
+
+      <button onclick="guardarPublicacion()">Publicar</button>
+    </div>
+
+    <hr style="margin:40px 0;">
+
+    <h3 style="text-align:center;">Tus publicaciones</h3>
+    <div id="contenedorPublicaciones"></div>
+
+    <h3 style="text-align:center;">Publicaciones Actuales</h3>
+    
+    <div class="card">
+        <h3>Historia de Diego</h3>
+        <p>"Hoy logré subir una rampa sin ayuda. Fue difícil, pero me siento orgulloso de lo que alcancé".</p>
+      </div>
+
+      <div class="card">
+        <h3>Consejo de Daphne</h3>
+        <p>"Siempre busca espacios accesibles, usa aplicaciones de mapas de accesibilidad para ahorrar tiempo y energía".</p>
+    </div>
+
+    <div class="card">
+  <h3>Historia de Laura</h3>
+  <p>"Hoy pude entrar al cine sola gracias a la rampa nueva. Sentí libertad y alegría, un pequeño gran logro".</p>
+</div>
+
+<div class="card">
+  <h3>Consejo de Mario</h3>
+  <p>"Practica ejercicios de movilidad todos los días, aunque sean cortos. La constancia hace la diferencia".</p>
+</div>
+
+<div class="card">
+  <h3>Reflexión de Ana</h3>
+  <p>"Cada vez que logro algo que antes parecía imposible, recuerdo que la paciencia y la perseverancia valen la pena".</p>
+</div>
+
+<div class="card">
+  <h3>Historia de José</h3>
+  <p>"Hoy conseguí tomar el transporte público sin ayuda. Fue un reto, pero me siento más independiente".</p>
+</div>
+
+<div class="card">
+  <h3>Consejo de Valeria</h3>
+  <p>"Siempre lleva contigo una botella de agua y descansos planificados, la energía es clave para el día a día".</p>
+</div>
+
+<div class="card">
+  <h3>Historia de Raúl</h3>
+  <p>"Pude usar un baño adaptado por primera vez en un lugar público. Es un cambio pequeño, pero muy significativo".</p>
+</div>
+
+<div class="card">
+  <h3>Reflexión de Sofía</h3>
+  <p>"No tengas miedo de pedir ayuda cuando la necesites, pedir apoyo también es un signo de fortaleza".</p>
+</div>
+
+<div class="card">
+  <h3>Consejo de Pablo</h3>
+  <p>"Organiza tu casa con pasillos despejados y muebles accesibles. La seguridad empieza en casa".</p>
+</div>
+
+<div class="card">
+  <h3>Historia de Elena</h3>
+  <p>"Hoy participé en un taller de pintura adaptado y me sentí creativa y feliz, las oportunidades accesibles cambian vidas".</p>
+</div>
+
+<div class="card">
+  <h3>Reflexión de Daniel</h3>
+  <p>"Cada paso que doy sin ayuda es un recordatorio de mi progreso, aunque sean pequeños avances".</p>
+</div>
+
+<div class="card">
+  <h3>Consejo de Camila</h3>
+  <p>"Explora la tecnología asistiva, como aplicaciones y dispositivos adaptados. Facilitan muchas tareas cotidianas".</p>
+</div>
+
+<div class="card">
+  <h3>Historia de Ricardo</h3>
+  <p>"Hoy me subí a un columpio adaptado en el parque. La diversión también es para todos, sin importar la movilidad".</p>
+</div>
+
+<div class="card">
+  <h3>Reflexión de Isabel</h3>
+  <p>"La inclusión empieza con actitudes, cada persona que respeta los espacios accesibles contribuye a un mundo mejor".</p>
+</div>
+
+<div class="card">
+  <h3>Consejo de Sergio</h3>
+  <p>"Practica transferencias seguras en casa y en lugares públicos. Aprender la técnica correcta evita accidentes".</p>
+</div>
+
+<div class="card">
+  <h3>Historia de Mariana</h3>
+  <p>"Hoy conseguí abrir una puerta automática sola, algo que antes parecía imposible. ¡La independencia se siente increíble!".</p>
+</div>
+
+<div class="card">
+  <h3>Reflexión de Alejandro</h3>
+  <p>"Cada pequeño logro es un paso hacia la confianza y la autonomía. Celebra siempre tus progresos".</p>
+</div>
+
+<div class="card">
+  <h3>Consejo de Gabriela</h3>
+  <p>"Participa en grupos o talleres de la comunidad, compartir experiencias fortalece el ánimo y la motivación".</p>
+</div>
+
+<div class="card">
+  <h3>Historia de Tomás</h3>
+  <p>"Hoy me animé a salir solo al parque y me sentí parte del mundo. Los espacios accesibles hacen posible la independencia".</p>
+</div>
+
+<div class="card">
+  <h3>Reflexión de Fernanda</h3>
+  <p>"Aceptar los retos diarios y adaptarse a ellos es la verdadera fuerza. La actitud lo cambia todo".</p>
+</div>
+
+<div class="card">
+  <h3>Consejo de Héctor</h3>
+  <p>"Aprende a organizar tu mochila o bolso para llevar todo lo necesario. La planificación evita complicaciones".</p>
+</div>
+    
+  </div>
+</section>
+
+<script>
+  // --- Cargar nombre del usuario registrado ---
+  function cargarNombrePlaza() {
+    const active = localStorage.getItem("activeUser");
+    const users = JSON.parse(localStorage.getItem("users")) || {};
+
+    if (active && users[active]) {
+      document.getElementById("nombreUsuarioPlaza").innerText = users[active].name;
+    } else {
+      document.getElementById("nombreUsuarioPlaza").innerText = "Invitado";
+    }
+  }
+
+  // --- Guardar publicación ---
+  function guardarPublicacion() {
+    const tipo = document.getElementById("tipoPublicacion").value;
+    const texto = document.getElementById("textoPublicacion").value.trim();
+
+    if (texto === "") {
+      alert("Por favor escribe algo.");
+      return;
+    }
+
+    const active = localStorage.getItem("activeUser");
+    const users = JSON.parse(localStorage.getItem("users")) || {};
+
+    if (!active || !users[active]) {
+      alert("Debes iniciar sesión para publicar.");
+      return;
+    }
+
+    const nombre = users[active].name;
+
+    let publicaciones = JSON.parse(localStorage.getItem("publicacionesPlaza")) || [];
+
+    publicaciones.push({
+      tipo: tipo,
+      nombre: nombre,
+      texto: texto
+    });
+
+    localStorage.setItem("publicacionesPlaza", JSON.stringify(publicaciones));
+
+    document.getElementById("textoPublicacion").value = "";
+
+    cargarPublicacionesPlaza();
+  }
+
+  // --- Cargar publicaciones SOLO del usuario activo ---
+  function cargarPublicacionesPlaza() {
+    const active = localStorage.getItem("activeUser");
+    const users = JSON.parse(localStorage.getItem("users")) || {};
+    const nombreUsuario = users[active]?.name;
+
+    const cont = document.getElementById("contenedorPublicaciones");
+    cont.innerHTML = "";
+
+    let publicaciones = JSON.parse(localStorage.getItem("publicacionesPlaza")) || [];
+
+    publicaciones
+      .filter(pub => pub.nombre === nombreUsuario)
+      .forEach(pub => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        card.innerHTML = `
+          <h3>${pub.tipo} de ${pub.nombre}</h3>
+          <p>"${pub.texto}"</p>
+        `;
+
+        cont.appendChild(card);
+      });
+  }
+
+  // --- Integración con tu función original showSection ---
+  const originalShowSection = window.showSection;
+
+  window.showSection = function(id) {
+    originalShowSection(id);
+
+    if (id === "plaza") {
+      cargarNombrePlaza();
+      cargarPublicacionesPlaza();
+    }
+  }
+</script>
+
+
+      
+
+  <!-- ====== EL GIMNASIO ====== -->
+  <section id="gimnasio">
+    <div class="container">
+    
+    <div style="text-align: center;">
+    <img src="https://cdn-icons-png.flaticon.com/128/7198/7198886.png" alt="Imagen de inicio de sesión" style="width:150px; margin-bottom: 20px;">
+    </div>
+      
+    <h2 style="text-align: center;">El Gimnasio "Ejercicios Adaptados"</h2>
+      <p>Encuentra rutinas y actividades físicas adaptadas para mejorar tu movilidad, fuerza y bienestar general.</p>
+
+      <h2>Terapia Ocupacional</h2>
+      <p>¿Cómo implementar la terapia ocupacional?."</p> 
+
+      <div class="card">
+        <h3>Terapia ocupacional para niños</h3>
+        <p> Esta terapia se centra en desarrollar habilidades motoras finas y coordinación para que los niños puedan realizar actividades cotidianas de manera más independiente.</p>
+        <p> Se trabajan las manos mediante ejercicios como usar pinzas, ensartar aros, abotonarse la ropa, ponerse los zapatos o comer con cubiertos.</p>
+        <p> También se incluyen actividades que fortalecen la movilidad y el equilibrio, como pararse de la cama o desplazarse con apoyo, promoviendo autonomía y confianza en su vida diaria y en la escuela.</p>
+        <!-- Aquí insertar imagen o video -->
+        <img src="https://i.postimg.cc/0NfQCWHT/14.jpg" alt="Ejercicios en Terapia Ocupacional de niños">
+      </div>
+
+      <div class="card">
+        <h3>Terapia ocupacional para adultos</h3>
+        <p> En adultos mayores, la terapia ocupacional busca mantener la funcionalidad y la independencia en actividades esenciales de la vida diaria.</p>
+        <p> Se realizan ejercicios para las manos, como usar pinzas, manipular objetos pequeños, abrocharse la ropa o comer con cubiertos, así como movimientos para levantarse de la cama o caminar con apoyo.</p>
+        <p> Estas prácticas ayudan a conservar la fuerza, la coordinación y la autonomía, reduciendo riesgos de caídas y mejorando la calidad de vida en el hogar y la comunidad.</p>
+        <img src="https://i.postimg.cc/wBVvkfbb/11.jpg" alt="Ejercicios en Terapia Ocupacional de adultos">
+      </div>
+
+      <h2>Terapia Sensorial</h2>
+      <p>¿Cómo implementar la terapia sensorial?."</p> 
+
+    <div class="card">
+        <h3>Terapia sensorial para niños</h3>
+        <p>Esta terapia está diseñada para estimular los sentidos y la percepción de los niños.</p>
+        <p>Durante las sesiones, los niños pueden estar acostados mientras observan luces de distintos colores, exploran texturas variadas y escuchan sonidos suaves.</p>
+        <p>Estas actividades ayudan a mejorar la atención, la coordinación sensorial, la relajación y la respuesta a estímulos, fomentando un desarrollo más completo y promoviendo bienestar físico y emocional.</p>        
+        <img src="https://i.postimg.cc/mDgrpY0n/17.jpg" alt="Ejercicios en Terapia Sensorial de niños">
+      </div>
+
+      <div class="card">
+        <h3>Terapia sensorial para adultos</h3>
+        <p>En adultos mayores, la terapia sensorial se enfoca en estimular la memoria, la percepción y la relajación.</p>
+        <p>Incluye actividades como observar luces suaves, tocar diferentes texturas, escuchar música o sonidos calmantes</p>
+        <p>Estas prácticas contribuyen a mejorar la atención, reducir el estrés, mantener la función cognitiva y promover bienestar emocional, favoreciendo la autonomía y la calidad de vida en su entorno diario.</p>
+        <img src="https://i.postimg.cc/bJwvVx7c/19.jpg" alt="Ejercicios en Terapia Sensorial de adultos">
+      </div>
+
+      <h2>Terapia Robótica</h2>
+      <p>¿Cómo implementar la terapia robótica?."</p> 
+
+      <div class="card">
+        <h3>Terapia robótica para niños</h3>
+        <p>En niños, la terapia robótica se enfoca en estimular el desarrollo motor, la coordinación y la rehabilitación en casos de discapacidad física o neurológica.</p>
+        <p>Se utilizan robots y dispositivos interactivos que motivan el movimiento de brazos, piernas y manos mediante juegos y ejercicios dinámicos.</p>
+        <p>Estas prácticas favorecen la motivación, la socialización, la mejora de habilidades motoras y la autonomía en actividades de la vida diaria.</p>
+        <img src="https://i.postimg.cc/tg5TzSM0/13.jpg" alt="Terapia robótica en niños">
+      </div>
+
+      <div class="card">
+        <h3>Terapia robótica para adultos</h3>
+        <p>En adultos mayores, la terapia robótica se utiliza para mejorar la movilidad, la fuerza y la coordinación motora.</p>
+        <p>Incluye el uso de exoesqueletos y robots asistivos que ayudan en la rehabilitación física, apoyando en la marcha, la movilidad de brazos y manos, así como en la recuperación de funciones motoras.</p>
+        <p>Esta terapia favorece la independencia, disminuye el riesgo de caídas y contribuye a una mejor calidad de vida en la rutina diaria.</p>
+        <img src="https://i.postimg.cc/zfjBktP6/12.jpg" alt="Terapia robótica en adultos mayores">
+      </div>
+
+      <h2>Terapia Física</h2>
+      <p>¿Cómo implementar la terapia física?."</p> 
+
+      <div class="card">
+        <h3>Terapia física para niños</h3>
+        <p>En niños, la terapia física busca mejorar el desarrollo motor, la coordinación y la fuerza muscular.</p>
+        <p>Incluye actividades lúdicas como juegos de movimiento, ejercicios de equilibrio, estiramientos y caminatas asistidas.</p>
+        <p>Esta terapia apoya en el tratamiento de problemas posturales, retrasos en el desarrollo motor y rehabilitación después de lesiones.</p>
+        <img src="https://i.postimg.cc/0QyNXYLL/18.jpg" alt="Terapia física en niños">
+      </div>
+
+      <div class="card">
+        <h3>Terapia física para adultos</h3>
+        <p>En adultos mayores, la terapia física se centra en mantener la movilidad, la fuerza muscular y la flexibilidad.</p>
+        <p>Incluye ejercicios de estiramiento, equilibrio, caminatas asistidas y rutinas adaptadas para prevenir caídas y mejorar la postura.</p>
+        <p>Estas prácticas ayudan a reducir dolores articulares, mejorar la circulación y favorecer la independencia en las actividades diarias.</p>
+        <img src="https://i.postimg.cc/xC1dpvw2/20.jpg" alt="Terapia física en adultos mayores">
+      </div>
+
+  </section>
+
+  <!-- ====== LA GUÍA ====== -->
+  <section id="guia">
+    <div class="container">
+      
+      <div style="text-align: center;">
+      <img src="https://cdn-icons-png.flaticon.com/128/3942/3942104.png" alt="Imagen de inicio de sesión" style="width:150px; margin-bottom: 20px;">
+      </div>
+      
+      <h2 style="text-align: center;">Recursos "La Guía"</h2>
+      <p>Artículos y recomendaciones prácticas para la vida diaria con discapacidad motriz.</p>
+
+      <h2>Ejercicio de cordones en zapato de práctica</h2>
+
+      <div class="card">
+      <p>Se inicia el ejercicio colocando los cordones en un zapato de plástico de manera progresiva, lo que ayuda a trabajar la motricidad fina y la coordinación.</p>
+      <img src="https://i.postimg.cc/cHLJkRpC/25.jpg" alt="Colocando cordones en zapato de práctica">
+      </div>
+
+      <div class="card">
+      <p>En la segunda etapa se observa el resultado a medias, fomentando la paciencia y la precisión al continuar el proceso.</p>
+      <img src="https://i.postimg.cc/xC1dpvw0/22.jpg" alt="Colocando cordones en zapato de práctica">
+      </div>
+
+      <div class="card">
+      <p>Casi al finalizar, el resultado está prácticamente completo, reforzando la concentración y la destreza manual.</p>
+      <img src="https://i.postimg.cc/wvjB4XCT/23.jpg" alt="Colocando cordones en zapato de práctica">
+      </div>
+
+      <h2>Ejercicio con taparroscas e hilo</h2>
+
+      <div class="card">
+      <p>El ejercicio consiste en insertar taparroscas con agujeros dentro de un hilo, desarrollando la coordinación ojo-mano y la motricidad fina.</p>
+      <img src="https://i.postimg.cc/0QyNXYTP/21.jpg" alt="Ejercicio con taparroscas en hilo">
+      </div>
+
+      <div class="card">
+      <p>A la mitad del proceso se refuerza la concentración y la paciencia al continuar con la secuencia.</p>
+      <img src="https://i.postimg.cc/DZwzpr9Z/24.jpg" alt="Ejercicio con taparroscas en hilo">
+      </div>
+
+      <div class="card">
+      <p>En la fase final, el trabajo casi terminado refleja la mejora en la precisión y la constancia del participante.</p>
+      <img src="https://i.postimg.cc/tT4gv3Ks/26.jpg" alt="Ejercicio con taparroscas en hilo">
+      </div>
+
+      <h2>Juego de aros de colores</h2>
+
+      <div class="card">
+      <p>La actividad comienza con todos los aros de colores revueltos, lo que estimula la percepción visual y la planeación para organizarlos.</p>
+      <img src="https://i.postimg.cc/W3Y1BDV3/28.jpg" alt="Juego de aros de colores organizado">
+      </div>
+      
+      <div class="card">
+      <p>A la mitad del proceso se observa un avance en la clasificación y acomodo de los aros en sus palos correspondientes.</p>
+      <img src="https://i.postimg.cc/0QXyT6v9/27.jpg" alt="Juego de aros de colores organizado">
+      </div>
+
+      <div class="card">
+      <p>Finalmente, el juego terminado refleja la capacidad de organización, el reconocimiento de colores y la motricidad fina.</p>
+      <img src="https://i.postimg.cc/mDpgvc4r/29.jpg" alt="Juego de aros de colores organizado">
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ====== EL MIRADOR ====== -->
+  <section id="mirador">
+    <div class="container">
+      
+      <div style="text-align: center;">
+      <img src="https://cdn-icons-png.flaticon.com/128/3420/3420278.png" alt="Imagen de inicio de sesión" style="width:150px; margin-bottom: 20px;">
+      </div>
+      
+      <h2 style="text-align: center;">El Mirador "Mapa Colaborativo"</h2>
+<p>Un mapa donde los usuarios marcan lugares accesibles como restaurantes, parques, centros de salud y transporte.</p>
+
+<div style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 10px;">
+  <iframe
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3757.6522786190326!2d-99.13017232487842!3d19.6421582339553!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85d1f43e59c00a9f%3A0xe3c992b6aa422e2c!2sUniversidad%20Polit%C3%A9cnica%20del%20Valle%20de%20M%C3%A9xico!5e0!3m2!1ses-419!2smx!4v1759455600850!5m2!1ses-419!2smx"
+    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
+    allowfullscreen=""
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade">
+  </iframe>
+</div>
+      
+
+      <div style="text-align: center;">
+<h2>Ejemplos de Innovaciones Inclusivas en la UPVM </h2>
+    </div>
+      <p>Universidad Politécnica del Valle de México - Edificio A</p> 
+      
+      <div class="card">
+        <h3>Elevador para movilidad reducida</h3>
+        <p>En el edificio A, se implementó un elevador para personas con movilidad reducida, con el fin de que los estudiantes con discapacidad de este edificio, puedan trasladarse a sus clases sin complicaciones.</p>
+        <img src="https://i.postimg.cc/KYNz5qsV/10.jpg" alt="Elevador">
+      </div>
+
+      <div class="card">
+      <h3>Rampa para discapacitados</h3>
+      <p>Se instaló una rampa de acceso para personas con discapacidad, facilitando su movilidad y asegurando un entorno más inclusivo.</p>
+      <img src="https://i.postimg.cc/pdZTBG1D/5.jpg" alt="Rampa para discapacitados">
+      </div>
+
+      <div class="card">
+      <h3>Paso exclusivo para discapacitados</h3>
+      <p>Se habilitó un paso exclusivo para personas con discapacidad, garantizando su seguridad y accesibilidad en las instalaciones.</p>
+      <img src="https://i.postimg.cc/6QwqnJzZ/1.jpg" alt="Paso exclusivo para discapacitados">
+      </div>
+
+      <div class="card">
+      <h3>Persona con discapacidad y enfermera</h3>
+      <p>En la institución se observa la atención inclusiva, donde una persona con discapacidad recibe apoyo y acompañamiento de una enfermera.</p>
+      <img src="https://i.postimg.cc/zfjBktPh/2.jpg" alt="Persona discapacitada con enfermera">
+      </div>
+
+      <div class="card">
+      <h3>Baño adaptado para discapacitados</h3>
+      <p>Se muestra un baño diseñado para personas con discapacidad, el cual cuenta con espacio suficiente y barras de apoyo.</p>
+      <p>Estas adaptaciones permiten mayor seguridad, accesibilidad y autonomía en el uso del sanitario.</p>
+      <img src="https://i.postimg.cc/MTpG37h3/15.jpg" alt="Baño adaptado para discapacitados">
+      </div>
+
+      <div class="card">
+      <h3>Rampa para discapacitados en la universidad</h3>
+      <p>Se instaló una rampa de acceso en la entrada de la universidad, destinada a facilitar la movilidad de personas con discapacidad.</p>
+      <p>Esta infraestructura fomenta la inclusión y asegura un entorno accesible para toda la comunidad estudiantil.</p>
+      <img src="https://i.postimg.cc/HxkLvwfP/16.jpg" alt="Rampa de acceso para discapacitados en la universidad">
+      </div>
+
+    </div>
+  </section>
+
+ <!-- ====== PERFIL ====== -->
+<section id="perfil">
+  <div class="container">
+    <h2 style="text-align: center;">Perfil del Usuario</h2>
+    <p>Administra tu información, revisa tus logros y personaliza tu experiencia en IncluNet.</p>
+
+    <!-- Imagen/avatar -->
+    <div style="text-align: center;">
+      <img src="https://cdn-icons-png.flaticon.com/128/5024/5024561.png" alt="Avatar de usuario" style="width:150px;">
+      <h3 id="perfilNombreMostrar" style="margin-top:10px;"></h3>
+    </div>
+
+    <!-- CARD 1: INFORMACIÓN PERSONAL -->
+    <div class="card">
+      <h3>Información Personal</h3>
+      <p><strong>Nombre:</strong> <span id="perfilNombre"></span></p>
+      <p><strong>Correo:</strong> <span id="perfilCorreo"></span></p>
+      
+      <div style="text-align: center;">
+      <button onclick="editarPerfil()">Editar información</button>
+      </div>
+    </div>
+
+    <!-- CARD 2: DATOS DE DISCAPACIDAD Y UBICACIÓN -->
+    <div class="card">
+      <h3>Detalles del Usuario</h3>
+      <p><strong>Edad:</strong> <span id="perfilEdad"></span></p>
+      <p><strong>Ciudad:</strong> <span id="perfilCiudad"></span></p>
+      <p><strong>Tipo de discapacidad:</strong> <span id="perfilDiscapacidad"></span></p>
+    </div>
+
+    <!-- CARD 3: MENSAJE MOTIVACIONAL -->
+    <div class="card">
+      
+          
+      <div style="text-align: center;">
+      <h3>Mensaje Motivacional</h3>
+      <p id="mensajeMotivacional"></p>
+      </div>
+      
+      <div style="text-align: center;">
+      <h2>Consigue tus sueños, una capacidad no te impide ser una persona normal. Tu puedes.</h2>
+    </div>
+    </div>
+
+    <div style="text-align: center;">
+    <button onclick="cerrarSesion()" style="margin-top: 20px;">Cerrar sesión</button>
+    </div>
+
+
+  </div>
+</section>
+
+<script>
+
+function cerrarSesion() {
+  localStorage.removeItem("activeUser");
+  alert("Sesión cerrada correctamente.");
+  showSection("home");  // o "login", según tu navegación
+}
+
+// Al cargar el perfil
+function cargarPerfil() {
+  const users = JSON.parse(localStorage.getItem("users")) || {};
+  const active = localStorage.getItem("activeUser");
+
+  if (!active || !users[active]) return;
+
+  const u = users[active];
+
+  // Colocar información en la pantalla
+  document.getElementById("perfilNombre").textContent = u.name;
+  document.getElementById("perfilCorreo").textContent = u.email;
+  document.getElementById("perfilEdad").textContent = u.edad || "No registrada";
+  document.getElementById("perfilCiudad").textContent = u.ciudad || "No registrada";
+  document.getElementById("perfilDiscapacidad").textContent = u.discapacidad || "No registrada";
+
+  // Mensaje motivacional (si no existe, se genera uno)
+  if (!u.mensaje) {
+    u.mensaje = generarMensajeMotivacional(u.name);
+    localStorage.setItem("users", JSON.stringify(users));
+  }
+
+  document.getElementById("mensajeMotivacional").textContent = u.mensaje;
+}
+
+// Genera un mensaje bonito
+function generarMensajeMotivacional(nombre) {
+  const mensajes = [
+    `${nombre}, cada paso que das te acerca más a tus metas.`,
+    `${nombre}, recuerda que tu esfuerzo vale más que cualquier dificultad.`,
+    `${nombre}, hoy es un gran día para demostrarte lo fuerte que eres.`,
+    `${nombre}, tus logros son más grandes de lo que imaginas.`,
+    `${nombre}, sigue adelante, el mundo necesita tu luz.`
+  ];
+
+  return mensajes[Math.floor(Math.random() * mensajes.length)];
+}
+
+// Permite editar datos personales
+function editarPerfil() {
+  const users = JSON.parse(localStorage.getItem("users")) || {};
+  const active = localStorage.getItem("activeUser");
+  const u = users[active];
+
+  const nuevaEdad = prompt("Ingresa tu edad:", u.edad || "");
+  const nuevaCiudad = prompt("Ingresa tu ciudad:", u.ciudad || "");
+  const nuevaDiscapacidad = prompt("Tipo de discapacidad:", u.discapacidad || "");
+
+  // Guardar lo que el usuario escribió
+  u.edad = nuevaEdad;
+  u.ciudad = nuevaCiudad;
+  u.discapacidad = nuevaDiscapacidad;
+
+  localStorage.setItem("users", JSON.stringify(users));
+
+  // Refrescar el perfil
+  cargarPerfil();
+  alert("Información actualizada correctamente.");
+}
+
+// Ejecutar al entrar al perfil
+cargarPerfil();
+</script>
+
+<!-- ====== VISTA AMPLIA DE SECCIONES ====== -->
+<section id="dashboard">
+  <div class="container">
+    <h2>Explora IncluNet</h2>
+    <p>Accede rápidamente a todas las secciones desde un solo lugar.</p>
+
+    <div class="card-grid">
+
+      <!-- La Plaza -->
+      <div class="card-button">
+        <img src="https://cdn-icons-png.flaticon.com/128/745/745205.png" alt="Foro La Plaza">
+        <button onclick="showSection('plaza')">Foro (La Plaza)</button>
+      </div>
+
+      <!-- La Guía -->
+      <div class="card-button">
+        <img src="https://cdn-icons-png.flaticon.com/128/3942/3942104.png" alt="Recursos La Guía">
+        <button onclick="showSection('guia')">Recursos (La Guía)</button>
+      </div>
+
+      <!-- El Mirador -->
+      <div class="card-button">
+        <img src="https://cdn-icons-png.flaticon.com/128/3420/3420278.png" alt="Mapa El Mirador">
+        <button onclick="showSection('mirador')">Mapa (El Mirador)</button>
+      </div>
+
+      <!-- El Gimnasio -->
+      <div class="card-button">
+        <img src="https://cdn-icons-png.flaticon.com/128/7198/7198886.png" alt="Ejercicios El Gimnasio">
+        <button onclick="showSection('gimnasio')">Ejercicios (El Gimnasio)</button>
+      </div>
+
+      <!-- Perfil -->
+      <div class="card-button">
+        <img src="https://cdn-icons-png.flaticon.com/512/5024/5024561.png" alt="Perfil de Usuario">
+        <button onclick="showSection('perfil')">Perfil</button>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+<style>
+  /* Contenedor del dashboard */
+  #dashboard .container {
+    text-align: center;
+    padding: 20px;
+  }
+
+  #dashboard h2 {
+    margin-bottom: 10px;
+  }
+
+  #dashboard .card-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+  }
+
+  #dashboard .card-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 150px;
+  }
+
+  #dashboard .card-button img {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+  }
+
+  #dashboard .card-button button {
+    width: 100%;
+    padding: 10px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    background-color: #4CAF50;
+    color: white;
+    transition: background-color 0.3s;
+  }
+
+  #dashboard .card-button button:hover {
+    background-color: #45a049;
+  }
+</style>
+
+  <!-- ====== NAVEGACIÓN INFERIOR ====== -->
+  <nav class="bottom-nav">
+
+  <a href="#" onclick="showSection('dashboard')">
+    <img src="https://cdn-icons-png.flaticon.com/128/5047/5047267.png" alt="Secciones">
+  </a>
+
+  <a href="#" onclick="showSection('plaza')">
+    <img src="https://cdn-icons-png.flaticon.com/128/745/745205.png" alt="Foro">
+  </a>
+
+  <a href="#" onclick="showSection('gimnasio')">
+    <img src="https://cdn-icons-png.flaticon.com/128/7198/7198886.png" alt="Recursos">
+  </a>
+
+  <a href="#" onclick="showSection('guia')">
+    <img src="https://cdn-icons-png.flaticon.com/128/3942/3942104.png" alt="Mapa">
+  </a>
+
+  <a href="#" onclick="showSection('mirador')">
+    <img src="https://cdn-icons-png.flaticon.com/128/3420/3420278.png" alt="Ejercicios">
+  </a>
+
+  <a href="#" onclick="showSection('perfil')">
+    <img src="https://cdn-icons-png.flaticon.com/512/5024/5024561.png" alt="Perfil">
+  </a>
+</nav>
+
+<style>
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #0077b6;
+    padding: 8px 0;
+    z-index: 999;
+  }
+
+  .bottom-nav img {
+    width: 50px;
+    height: 50px;
+    transition: transform 0.2s ease;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+  }
+
+  .bottom-nav img:hover {
+    transform: scale(1.15);
+    opacity: .85;
+  }
+
+  /* Ajustes responsivos para pantallas pequeñas */
+  @media (max-width: 420px) {
+    .bottom-nav img {
+      width: 30px;
+      height: 30px;
+    }
+  }
+
+  @media (max-width: 350px) {
+    .bottom-nav img {
+      width: 26px;
+      height: 26px;
+    }
+  }
+</style>
+
+<script>
+  function showSection(sectionId) {
+    // Ocultar todas las secciones
+    const sections = document.querySelectorAll("section");
+    sections.forEach(sec => sec.style.display = "none");
+
+    // Mostrar la sección solicitada
+    document.getElementById(sectionId).style.display = "block";
+  }
+
+  // === MOSTRAR NAV AL INICIAR SESIÓN, REGISTRAR O ENTRAR COMO INVITADO ===
+  function accederUsuario() {
+    document.getElementById("bottomNav").style.display = "flex";
+    showSection("menu");
+  }
+
+  function accederInvitado() {
+    document.getElementById("bottomNav").style.display = "flex";
+    showSection("menu");
+  }
+
+  function accederRegistrado() {
+    document.getElementById("bottomNav").style.display = "flex";
+    showSection("menu");
+  }
+</script>
+</body>
+</html>
